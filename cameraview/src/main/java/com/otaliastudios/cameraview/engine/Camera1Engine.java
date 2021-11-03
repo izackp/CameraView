@@ -515,6 +515,10 @@ public class Camera1Engine extends CameraBaseEngine implements
         }
     }
 
+    private void applyFaceDetection(@NonNull Camera.Parameters params) {
+        boolean supportsFaceDetection = params.getMaxNumDetectedFaces() > 0;
+    }
+
     @Override
     public void setFlash(@NonNull Flash flash) {
         final Flash old = mFlash;

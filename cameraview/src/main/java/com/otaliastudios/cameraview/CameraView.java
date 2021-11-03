@@ -12,6 +12,7 @@ import android.content.res.TypedArray;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.hardware.camera2.params.Face;
 import android.location.Location;
 import android.media.MediaActionSound;
 import android.os.Build;
@@ -2267,6 +2268,18 @@ public class CameraView extends FrameLayout implements LifecycleObserver {
                 public void run() {
                     for (CameraListener listener : mListeners) {
                         listener.onPictureShutter();
+                    }
+                }
+            });
+        }
+
+        @Override
+        public void dispatchOnFacesChanged(Face[] listFaces, Rect bounds) {
+            mUiHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    for (CameraListener listener : mListeners) {
+                        listener.onFacesChanged(listFaces, bounds);
                     }
                 }
             });

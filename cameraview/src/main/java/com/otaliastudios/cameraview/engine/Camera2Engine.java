@@ -1,5 +1,7 @@
 package com.otaliastudios.cameraview.engine;
 
+import static android.hardware.camera2.CameraMetadata.STATISTICS_FACE_DETECT_MODE_OFF;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.ImageFormat;
@@ -14,6 +16,7 @@ import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.CaptureResult;
 import android.hardware.camera2.TotalCaptureResult;
+import android.hardware.camera2.params.Face;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.location.Location;
 import android.media.Image;
@@ -78,6 +81,8 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutionException;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 public class Camera2Engine extends CameraBaseEngine implements
@@ -295,11 +300,18 @@ public class Camera2Engine extends CameraBaseEngine implements
             }
         }
 
+        @RequiresApi(api = Build.VERSION_CODES.N)
         @Override
         public void onCaptureCompleted(@NonNull CameraCaptureSession session,
                                        @NonNull CaptureRequest request,
                                        @NonNull TotalCaptureResult result) {
             mLastRepeatingResult = result;
+            Face[] faces = result.get(CaptureResult.STATISTICS_FACES);
+            int MIN_FACE_CONFIDENCE = 30;
+            Predicate<Face> byScore = face -> face.getScore() > MIN_FACE_CONFIDENCE;
+            Face[] results = Arrays.stream(faces).filter(byScore).toArray(Face[]::new);
+            Rect bounds = (Rect) result.get(CaptureResult.SCALER_CROP_REGION);
+            getCallback().dispatchOnFacesChanged(results, bounds);
             for (Action action : mActions) {
                 action.onCaptureCompleted(Camera2Engine.this, request, result);
             }
@@ -1021,6 +1033,7 @@ public class Camera2Engine extends CameraBaseEngine implements
         applyZoom(builder, 0F);
         applyExposureCorrection(builder, 0F);
         applyPreviewFrameRate(builder, 0F);
+        applyFaceDetection(builder);
 
         if (oldBuilder != null) {
             // We might be in a metering operation, or the old builder might have some special
@@ -1376,6 +1389,18 @@ public class Camera2Engine extends CameraBaseEngine implements
                 }
             }
         });
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    protected void applyFaceDetection(@NonNull CaptureRequest.Builder builder) {
+        int[] modes = readCharacteristic(CameraCharacteristics.STATISTICS_INFO_AVAILABLE_FACE_DETECT_MODES,
+                new int[0]);
+        if (modes.length > 0) {
+            int lastMode = modes[modes.length - 1];
+            if (lastMode != STATISTICS_FACE_DETECT_MODE_OFF) {
+                builder.set(CaptureRequest.STATISTICS_FACE_DETECT_MODE, lastMode);
+            }
+        }
     }
 
     @SuppressWarnings("WeakerAccess")

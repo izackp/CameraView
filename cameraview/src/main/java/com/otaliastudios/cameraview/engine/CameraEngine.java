@@ -2,6 +2,8 @@ package com.otaliastudios.cameraview.engine;
 
 import android.content.Context;
 import android.graphics.PointF;
+import android.graphics.Rect;
+import android.hardware.camera2.params.Face;
 import android.location.Location;
 
 
@@ -128,6 +130,7 @@ public abstract class CameraEngine implements
         void dispatchError(CameraException exception);
         void dispatchOnVideoRecordingStart();
         void dispatchOnVideoRecordingEnd();
+        void dispatchOnFacesChanged(Face[] listFaces, Rect bounds);
     }
 
     protected static final String TAG = CameraEngine.class.getSimpleName();

@@ -1,6 +1,9 @@
 package com.otaliastudios.cameraview;
 
 import android.graphics.PointF;
+import android.graphics.Rect;
+import android.hardware.camera2.params.Face;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
@@ -167,6 +170,11 @@ public abstract class CameraListener {
      */
     @UiThread
     public void onPictureShutter() {
+
+    }
+
+    @UiThread
+    public void onFacesChanged(Face[] numFaces, Rect activeArraySize) {
 
     }
     
