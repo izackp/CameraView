@@ -4,7 +4,7 @@ import io.deepmedia.tools.publisher.common.GithubScm
 
 plugins {
     id("com.android.library")
-    id("kotlin-android")
+    //id("kotlin-android") //https://issuetracker.google.com/issues/234865137
     id("io.deepmedia.tools.publisher")
     id("jacoco")
 }
@@ -53,7 +53,7 @@ publisher {
     project.addLicense(License.APACHE_2_0)
     project.addDeveloper("natario1", "mat.iavarone@gmail.com")
     release.sources = Release.SOURCES_AUTO
-    release.docs = Release.DOCS_AUTO
+    //release.docs = Release.DOCS_AUTO
     release.version = "2.7.2"
 
     directory()
