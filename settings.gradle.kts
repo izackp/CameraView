@@ -1,2 +1,1 @@
 include(":cameraview")
-include(":demo")

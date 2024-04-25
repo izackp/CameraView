@@ -5,6 +5,7 @@ import io.deepmedia.tools.publisher.common.GithubScm
 plugins {
     id("com.android.library")
     //id("kotlin-android") //https://issuetracker.google.com/issues/234865137
+    id("kotlin-android")
     id("io.deepmedia.tools.publisher")
     id("jacoco")
 }
@@ -41,10 +42,10 @@ dependencies {
     androidTestImplementation("org.mockito:mockito-android:2.28.2")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
 
-    api("androidx.exifinterface:exifinterface:1.3.6")
+    api("androidx.exifinterface:exifinterface:1.3.7")
     api("androidx.lifecycle:lifecycle-common:2.6.2")
-    api("com.google.android.gms:play-services-tasks:18.0.2")
-    implementation("androidx.annotation:annotation:1.7.0")
+    api("com.google.android.gms:play-services-tasks:18.1.0")
+    implementation("androidx.annotation:annotation:1.7.1")
     implementation("com.otaliastudios.opengl:egloo:0.6.1")
 }
 
